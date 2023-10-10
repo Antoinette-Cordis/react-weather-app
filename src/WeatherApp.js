@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-export default function Weather(props) {
+export default function Weather() {
   let [weather, setWeather] = useState("");
   let [city, setCity] = useState("");
-  let [loaded, setLoaded] = useState(true);
 
   function showTemperature(response) {
-    setLoaded(false);
-
     setWeather({
       humidity: response.data.main.humidity,
       temperature: Math.round(response.data.main.temp),
@@ -102,19 +99,14 @@ export default function Weather(props) {
     search(cityElement.value);
   }
   search("Nigeria");
-  let form =
-    (document.querySelector("#search-input"),
-    (
-      <form onSubmit={searchForm}>
-        <input
-          type="search"
-          placeholder="Type a City"
-          autoFocus="on"
-          onChange={updateCity}
-        />
-        <input type="submit" value="search" />
-      </form>
-    ));
-  if (loaded) return;
-  <div>{form}</div>;
+
+  <form onSubmit={searchForm}>
+    <input
+      type="search"
+      placeholder="Type a City"
+      autoFocus="on"
+      onChange={updateCity}
+    />
+    <input type="submit" value="search" />
+  </form>;
 }

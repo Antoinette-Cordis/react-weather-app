@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
-import Weather from "./Weather";
+import WeatherApp from "./WeatherApp";
 function App() {
   return (
     <div className="App">
@@ -30,7 +30,7 @@ function App() {
             </form>
             <div className="row">
               <div className="col-6">
-                <h1 id="city"></h1>
+                <p id="city"></p>
                 <ul id="clear">
                   <li id="date">
                     <span></span>
@@ -79,7 +79,7 @@ function App() {
           <small> by: Antoinette Cordis Amauba</small>
         </div>
 
-        <Weather city="" />
+        <WeatherApp city="" />
         <a
           className="App-link"
           href="https://reactjs.org"
