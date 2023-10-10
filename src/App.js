@@ -30,7 +30,7 @@ function App() {
             </form>
             <div className="row">
               <div className="col-6">
-                <p id="city"></p>
+                <p id="city">Nigeria</p>
                 <ul id="clear">
                   <li id="date">
                     <span></span>
