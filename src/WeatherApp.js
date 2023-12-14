@@ -2,111 +2,75 @@ import React, { useState } from "react";
 import axios from "axios";
 
 export default function Weather() {
-  let [weather, setWeather] = useState("");
-  let [city, setCity] = useState("");
+  let [ready, setReady] = useState(false);
+  let [weatherData, setWeatherData] = useState("");
 
   function showTemperature(response) {
-    setWeather({
+    setWeatherData({
       humidity: response.data.main.humidity,
       temperature: Math.round(response.data.main.temp),
       wind: Math.round(response.data.wind.speed),
       city: response.data.name,
       description: response.data.weather[0].description,
-      date: formatDate(response.data.dt * 1000),
     });
-    showForecast(response.data.coord);
+    setReady(true);
   }
-  function updateCity(event) {
-    event.preventDefault();
-    setCity(event.target.value);
+  if (ready) {
     return (
-      <h3>
-        `The ${weather} in ${city} is warm`
-      </h3>
-    );
-  }
-  function formatDate(timestamp) {
-    let now = new Date(timestamp);
-    let hours = now.getHours();
-    if (hours < 10) {
-      hours = `0${hours}`;
-    }
-    let minutes = now.getMinutes();
-    if (minutes < 10) {
-      minutes = `0${minutes}`;
-    }
-    let days = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
-    let day = days[now.getDay()];
-    let year = now.getFullYear();
-    return `${year},${day} ${hours}:${minutes}`;
-  }
-  function formatDay(timestamp) {
-    let date = new Date(timestamp * 1000);
-    let day = date.getDay();
-    let days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
-    return days[day];
-  }
-  function displayForecast(response) {
-    let forecast = response.data.daily;
-    let forecastElement = document.querySelector("#forecast");
-    let forecastHTML = `<div class="row">`;
-    forecast.forEach(function (forecastDay, index) {
-      if (index < 6) {
-        forecastHTML =
-          forecastHTML +
-          `<div class="col-2">
-              <div class="weather-forecast-dates">${formatDay(
-                forecastDay.dt
-              )}</div>
-              <img
-                src="https://openweathermap.org/img/wn/${
-                  forecastDay.weather[0].icon
-                }@2x.png"
-                alt=""
-                width="40"
+      <div className="Weather">
+        <form>
+          <div className="row">
+            <div className="col-9">
+              <input
+                type="search"
+                placeholder="Enter a City.."
+                className="form-control"
+                autofocus="on"
               />
-              <div class="weather-forecast-temperature">
-                <span class="weather-forecast-temperature-max">${Math.round(
-                  forecastDay.temp.max
-                )}°</span>
-                <span class="weather-forecast-temperature-min">${Math.round(
-                  forecastDay.temp.min
-                )}°</span>
-              </div>  
             </div>
-            `;
-      }
-    });
-    forecastHTML = forecastHTML + `</div>`;
-    forecastElement.innerHTML = forecastHTML;
-  }
-  function showForecast(coordinates) {
-    console.log(coordinates);
+            <div className="col-3">
+              <input
+                type="submit"
+                value="search"
+                className="btn btn-primary w-100"
+              />
+            </div>
+          </div>
+        </form>
+        <h1>{weatherData.city}</h1>
+        <ul>
+          <li>Wednesday 09:00</li>
+          <li>{weatherData.description}</li>
+        </ul>
+        <div className="row mt-3">
+          <div className="col-6">
+            <div className="clearfix">
+              <img
+                src={weatherData.iconurl}
+                alt={weatherData.description}
+                className="float-left"
+              />
+              <div className="float-left" />
+              <span className="temperature">
+                {Math.round(weatherData.temperature)}
+              </span>
+              <span className="units">°C</span>
+            </div>
+          </div>
+        </div>
+        <div className="col-6">
+          <ul>
+            <li>Humidity:{weatherData.humidity}%</li>
+            <li>Wind:{weatherData.wind}KM/Hr</li>
+          </ul>
+        </div>
+      </div>
+    );
+  } else {
     let Apikey = "bd5b4461863eddaa6ced0a0a67989e0a";
-    let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${Apikey}&units=metric`;
-    console.log(apiUrl);
-    axios.get(apiUrl).then(displayForecast);
-  }
-
-  function search(city) {
-    let Apikey = "bd5b4461863eddaa6ced0a0a67989e0a";
+    let city = "Nigeria";
     let Apiurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Apikey}&units=metric`;
     axios.get(Apiurl).then(showTemperature);
+    return "Loading";
   }
-  function searchForm(event) {
-    event.preventDefault();
-    let cityElement = document.querySelector("#city-input");
-    search(cityElement.value);
-  }
-  search("Nigeria");
-
-  <form onSubmit={searchForm}>
-    <input
-      type="search"
-      placeholder="Type a City"
-      autoFocus="on"
-      onChange={updateCity}
-    />
-    <input type="submit" value="search" />
-  </form>;
 }
