@@ -1,24 +1,38 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-export default function Weather() {
-  let [ready, setReady] = useState(false);
-  let [weatherData, setWeatherData] = useState("");
+export default function Weather(props) {
+  let [weatherData, setWeatherData] = useState({ ready: false });
+  let [city, setCity] = useState(props.defaultCity);
 
   function showTemperature(response) {
     setWeatherData({
+      ready: true,
       humidity: response.data.main.humidity,
       temperature: Math.round(response.data.main.temp),
       wind: Math.round(response.data.wind.speed),
       city: response.data.name,
       description: response.data.weather[0].description,
     });
-    setReady(true);
   }
-  if (ready) {
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    updateCity();
+  }
+  function changeCity(event) {
+    setCity(event.target.value);
+  }
+  function updateCity() {
+    let Apikey = "bd5b4461863eddaa6ced0a0a67989e0a";
+    let Apiurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Apikey}&units=metric`;
+    axios.get(Apiurl).then(showTemperature);
+  }
+
+  if (weatherData.ready) {
     return (
       <div className="Weather">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col-9">
               <input
@@ -26,6 +40,7 @@ export default function Weather() {
                 placeholder="Enter a City.."
                 className="form-control"
                 autofocus="on"
+                onChange={changeCity}
               />
             </div>
             <div className="col-3">
@@ -67,10 +82,7 @@ export default function Weather() {
       </div>
     );
   } else {
-    let Apikey = "bd5b4461863eddaa6ced0a0a67989e0a";
-    let city = "Nigeria";
-    let Apiurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Apikey}&units=metric`;
-    axios.get(Apiurl).then(showTemperature);
+    updateCity();
     return "Loading";
   }
 }

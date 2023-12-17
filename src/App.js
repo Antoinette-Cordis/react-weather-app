@@ -3,7 +3,7 @@ import WeatherApp from "./WeatherApp";
 function App() {
   return (
     <div className="App">
-      <WeatherApp />
+      <WeatherApp defaultCity="Nigeria" />
       <div className="name">
         <a
           href="https://github.com/Antoinette-Cordis/WEATHER-APP-PROJECT"
